@@ -8,9 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.containsString
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by stefletcher on 02/07/2017.
@@ -38,7 +39,7 @@ class TestUserRepository {
         mockMvc.perform(post("/user")
                 .content("{\"firstName\": \"Frodo\", \"lastName\":\"Baggins\"}"))
                 .andExpect(
-                    status().isCreated()).andExpect(
-                    header().string("Location", containsString("user/")));
+                status().isCreated()).andExpect(
+                header().string("Location", containsString("user/")));
     }
 }

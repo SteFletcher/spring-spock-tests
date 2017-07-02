@@ -1,0 +1,57 @@
+buildscript {
+     ext {
+         springBootVersion = '1.5.3.RELEASE'
+     }
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+    }
+    dependencies {
+         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "gradle.plugin.com.stefletcher.gradle-javabase-plugin:javabaseplugin:1.0.13"
+    
+    }
+}
+
+apply plugin: "com.stefletcher.gradle-javabase-plugin"
+apply plugin: 'org.springframework.boot'
+
+
+jar {
+	baseName = 'spring-spock-tests'
+	version = "1.0.$System.env.TRAVIS_BUILD_NUMBER"
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+version = "1.0.$System.env.TRAVIS_BUILD_NUMBER"
+
+group = "com.stefletcher.spring"
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+	compile('org.springframework.boot:spring-boot-starter-data-rest')
+	compile 'org.codehaus.groovy:groovy-all:2.4.7'
+	
+	testCompile('org.springframework.boot:spring-boot-starter-test') 
+    testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
+        exclude module: 'groovy-all'
+    }
+    testCompile('org.spockframework:spock-spring:1.1-groovy-2.4') {
+        exclude module: 'groovy-all'
+    }
+}
+
+test {
+    testLogging {
+        exceptionFormat "full"
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}

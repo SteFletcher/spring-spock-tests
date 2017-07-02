@@ -1,0 +1,16 @@
+language: groovy
+
+services:
+  - mongodb
+
+jdk:
+  - oraclejdk8
+
+script:
+  - ./gradlew clean build
+
+before_install:
+  - chmod +x gradlew
+
+after_success:
+- "./gradlew jacocoTestReport coveralls --debug"

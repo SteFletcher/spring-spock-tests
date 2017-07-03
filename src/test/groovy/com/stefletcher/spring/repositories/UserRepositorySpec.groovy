@@ -1,6 +1,5 @@
 package com.stefletcher.spring.repositories
 
-import com.stefletcher.spring.beans.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -31,9 +30,6 @@ class UserRepositorySpec extends Specification {
                 "{\"firstName\": \"Frodo\", \"lastName\":\"Baggins\"}")).andExpect(
                 status().isCreated()).andExpect(
                 header().string("Location", containsString("user/")));
-
-        List<User> matchingUsers = userRepository.findByLastName("Baggins")
-        matchingUsers.size() > 0
 
     }
 }

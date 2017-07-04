@@ -1,5 +1,6 @@
 package com.stefletcher.spring.repositories
 
+import com.stefletcher.spring.beans.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -25,11 +26,19 @@ class UserRepositorySpec extends Specification {
     UserRepository userRepository
 
     def "spring context loads"() {
-        expect: "ability to put and get users"
+
+        when: "ability to put and get users"
         mockMvc.perform(post("/user").content(
                 "{\"firstName\": \"Frodo\", \"lastName\":\"Baggins\"}")).andExpect(
                 status().isCreated()).andExpect(
                 header().string("Location", containsString("user/")));
+        then:
+        userRepository.findByLastName("Baggins") != null
+        userRepository.findByLastName("Baggins").get(0).firstName == "Frodo"
 
+    }
+    def "repository findby AND works expected"() {
+        expect:
+        userRepository.findByFirstNameAndLastName("Frodo", "Baggins").get(0).firstName == "Frodo"
     }
 }

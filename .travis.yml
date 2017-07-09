@@ -7,7 +7,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew clean build
+  - ./gradlew build integTest
 
 before_install:
   - chmod +x gradlew

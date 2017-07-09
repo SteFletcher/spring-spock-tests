@@ -31,11 +31,4 @@ class UserControllerSpec extends Specification {
                 .andExpect(status().isOk())
     }
 
-//    @Autowired
-//    UserRepository userRepository;
-//
-//    def "Test UserRepository initialisation"() {
-//        expect: "UserRepository to be autowired into this test spec."
-//        userRepository != null
-//    }
 }

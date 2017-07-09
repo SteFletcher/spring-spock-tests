@@ -1,9 +1,15 @@
 package com.stefletcher.spring.repositories
 
+import com.stefletcher.spring.Application
 import com.stefletcher.spring.beans.User
+import com.stefletcher.spring.configuration.MongoConfiguration
+import com.stefletcher.spring.configuration.TestMongoConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
 import spock.lang.Stepwise
@@ -18,6 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@ContextConfiguration(classes = [Application.class, TestMongoConfiguration.class])
+@ActiveProfiles("unit")
 @Stepwise
 class UserRepositorySpec extends Specification {
 

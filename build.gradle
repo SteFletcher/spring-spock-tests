@@ -18,7 +18,6 @@ buildscript {
 apply plugin: "com.stefletcher.gradle-javabase-plugin"
 apply plugin: 'org.springframework.boot'
 apply plugin: 'idea'
-apply plugin: "com.iadams.openshift-base"
 
 jar {
 	baseName = 'spring-spock-tests'
@@ -40,6 +39,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	compile 'org.codehaus.groovy:groovy-all:2.4.7'
+    compile 'io.fabric8:openshift-client:2.2.13'
+    compile 'org.hibernate:hibernate-validator:5.4.1.Final'
 	
 	testCompile('org.springframework.boot:spring-boot-starter-test') 
     testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
@@ -57,5 +58,36 @@ test {
         events "passed", "skipped", "failed", "standardOut", "standardError"
     }
 }
-//test.systemProperties = System.properties
-//bootRun.systemProperties = System.properties
+
+
+
+import io.fabric8.openshift.api.model.DeploymentConfigBuilder
+import io.fabric8.openshift.api.model.DeploymentTriggerPolicyBuilder
+
+task createDeployment(type: com.iadams.gradle.openshift.tasks.OpenShiftCreateDeploymentTask) {
+    namespace = 'myproject'
+    deployment = new DeploymentConfigBuilder()
+            .withNewMetadata()
+            .withName('test-app')
+            .endMetadata()
+            .withNewSpec()
+            .withReplicas(1)
+            .withTriggers(new DeploymentTriggerPolicyBuilder().withType('ConfigChange').build())
+            .addToSelector('app','test-app')
+            .withNewTemplate()
+            .withNewMetadata()
+            .addToLabels('app', 'test-app')
+            .endMetadata()
+            .withNewSpec()
+            .addNewContainer()
+            .withName('test-app')
+            .withImage('${registryUrl}/myproject/test-app:0.1')
+            .endContainer()
+            .endSpec()
+            .endTemplate()
+            .endSpec()
+            .withNewStatus()
+            .withLatestVersion(0L)
+            .endStatus()
+            .build()
+}

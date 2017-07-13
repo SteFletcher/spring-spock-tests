@@ -43,7 +43,7 @@ class TestUserRepository {
     public void shouldCreateEntityWithoutException() throws Exception {
 
         mockMvc.perform(post("/user")
-                .content("{\"firstName\": \"Frodo\", \"lastName\":\"Baggins\"}"))
+                .content("{\"firstName\": \"Frodo\", \"lastName\":\"Baggins\", \"email\":\"Baggins@bagginsville.com\"}"))
                 .andExpect(
                 status().isCreated()).andExpect(
                 header().string("Location", containsString("user/")));

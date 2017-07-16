@@ -37,9 +37,16 @@ class UserRepositorySpec extends Specification {
 
         when: "ability to put and get users"
         mockMvc.perform(post("/user").content(
-                "{\"firstName\": \"Frodo\", \"lastName\":\"Baggins\"}")).andExpect(
-                status().isCreated()).andExpect(
-                header().string("Location", containsString("user/")));
+                ''' 
+                            {
+                                "firstName": "Frodo", 
+                                "lastName":"Baggins",
+                                "email":"frodo@bagend.com"
+                            }
+
+                    '''))
+                .andExpect(status().isCreated()).andExpect(
+                header().string("Location", containsString("user/")))
         then:
         userRepository.findByLastName("Baggins") != null
         userRepository.findByLastName("Baggins").get(0).firstName == "Frodo"

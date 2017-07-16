@@ -11,7 +11,6 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath "gradle.plugin.com.stefletcher.gradle-javabase-plugin:javabaseplugin:1.0.13"
-        classpath "gradle.plugin.com.iadams.gradle:gradle-openshift-plugin:0.1-RC1"
     }
 }
 
@@ -57,37 +56,4 @@ test {
         exceptionFormat "full"
         events "passed", "skipped", "failed", "standardOut", "standardError"
     }
-}
-
-
-
-import io.fabric8.openshift.api.model.DeploymentConfigBuilder
-import io.fabric8.openshift.api.model.DeploymentTriggerPolicyBuilder
-
-task createDeployment(type: com.iadams.gradle.openshift.tasks.OpenShiftCreateDeploymentTask) {
-    namespace = 'myproject'
-    deployment = new DeploymentConfigBuilder()
-            .withNewMetadata()
-            .withName('test-app')
-            .endMetadata()
-            .withNewSpec()
-            .withReplicas(1)
-            .withTriggers(new DeploymentTriggerPolicyBuilder().withType('ConfigChange').build())
-            .addToSelector('app','test-app')
-            .withNewTemplate()
-            .withNewMetadata()
-            .addToLabels('app', 'test-app')
-            .endMetadata()
-            .withNewSpec()
-            .addNewContainer()
-            .withName('test-app')
-            .withImage('${registryUrl}/myproject/test-app:0.1')
-            .endContainer()
-            .endSpec()
-            .endTemplate()
-            .endSpec()
-            .withNewStatus()
-            .withLatestVersion(0L)
-            .endStatus()
-            .build()
 }

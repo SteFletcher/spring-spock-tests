@@ -8,12 +8,14 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MvcResult
 import spock.lang.Specification
 import spock.lang.Stepwise
 import spring.configuration.IntegTestMongoConfiguration
 
 import static org.hamcrest.Matchers.containsString
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -33,9 +35,9 @@ class UserRepositorySpec extends Specification {
     @Autowired
     UserRepository userRepository
 
-    def "spring context loads"() {
+    def "New user created can be retrieved via repository"() {
 
-        when: "ability to put and get users"
+        when: "new user created via post"
         mockMvc.perform(post("/user").content(
                 ''' 
                             {
@@ -47,13 +49,28 @@ class UserRepositorySpec extends Specification {
                     '''))
                 .andExpect(status().isCreated()).andExpect(
                 header().string("Location", containsString("user/")))
-        then:
+        then: "ability to retrieve the user via the repository"
         userRepository.findByLastName("Baggins") != null
         userRepository.findByLastName("Baggins").get(0).firstName == "Frodo"
 
     }
-    def "repository findby AND works expected"() {
-        expect:
-        userRepository.findByFirstNameAndLastName("Frodo", "Baggins").get(0).firstName == "Frodo"
+    def "New user created can be retrieved via HATEOS API"() {
+
+        when: "new user created via post"
+        mockMvc.perform(post("/user").content(
+                ''' 
+                            {
+                                "firstName": "Frodo", 
+                                "lastName":"Baggins",
+                                "email":"frodo@bagend.com"
+                            }
+
+                    '''))
+                .andExpect(status().isCreated()).andExpect(
+                header().string("Location", containsString("user/")))
+
+        then: "ability to retrieve the user via the HATEOS API"
+        MvcResult response = mockMvc.perform(get("/user/search/findByLastName?name=Baggins")).andReturn()
+        response.getResponse().getStatus() == 200
     }
 }

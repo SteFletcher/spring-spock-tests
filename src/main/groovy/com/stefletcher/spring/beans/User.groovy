@@ -1,17 +1,36 @@
 package com.stefletcher.spring.beans
 
+import org.joda.time.DateTime
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.domain.Persistable
+import org.springframework.data.mongodb.core.mapping.Document
 
-import javax.validation.constraints.NotNull
 
-
-public class User {
+@Document
+public class User implements Persistable<String> {
 
     @Id private String id;
 
     String firstName
     String lastName
+    private boolean persisted;
 
-    @NotNull(message = "Thou shall populate me!")
+    @CreatedDate
+    Date createdDate
+    @LastModifiedDate
+    Date lastModifiedDate
+
     String email
+
+    @Override
+    String getId() {
+        return id
+    }
+
+    @Override
+    boolean isNew() {
+        return !persisted
+    }
 }

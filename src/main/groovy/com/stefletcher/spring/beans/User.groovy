@@ -9,13 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 
 @Document
-public class User implements Persistable<String> {
+public class User {
 
-    @Id private String id;
+    @Id String id;
 
     String firstName
     String lastName
-    private boolean persisted;
 
     @CreatedDate
     Date createdDate
@@ -24,13 +23,5 @@ public class User implements Persistable<String> {
 
     String email
 
-    @Override
-    String getId() {
-        return id
-    }
 
-    @Override
-    boolean isNew() {
-        return !persisted
-    }
 }

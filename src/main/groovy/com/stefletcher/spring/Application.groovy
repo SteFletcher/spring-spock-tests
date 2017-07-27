@@ -18,4 +18,9 @@ public class Application {
     UserValidator beforeCreateUserValidator(){
         return new UserValidator()
     }
+
+    @Bean
+    public UserValidator beforeSaveUserValidator() {
+        return new UserValidator();
+    }
 }

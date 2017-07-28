@@ -8,7 +8,7 @@ import org.springframework.validation.Validator
 /**
  * Created by ste on 13/07/17.
  */
-@Component("beforeCreateUserValidator")
+
 class UserValidator implements Validator{
     @Override
     boolean supports(Class<?> clazz) {
